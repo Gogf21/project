@@ -1,0 +1,38 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static "bootstrap\css\bootstrap.min.css" %}">
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+    <title>Registration</title>
+</head>
+<body>
+    <main class="d-flex justify-content-center">
+        <div class="registration">
+            <h2 class="mt-5 mb-4 pt-5 pb-5">Registration</h2>
+            <form action="{% url "user:registration" %}" class="forma" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" class="form-control form-style" name="email" placeholder="Email" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control form-style" name="username" placeholder="Login" required>
+                </div>
+                
+                <div class="mb-3">
+                    <input type="password" class="form-control form-style" name="password1" placeholder="Password">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control form-style" name="password2" placeholder="Password">
+                </div>
+                <button type="submit" class="register-btn form-style w-100">Sign up</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

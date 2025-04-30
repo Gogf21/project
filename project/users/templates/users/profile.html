@@ -1,0 +1,63 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}Профиль{% endblock title %}
+
+{% block content %} 
+    <div class="head d-flex">
+        {% if  form.instance.image%}
+            <img src="{{form.instance.image.url}}" alt="" width="120"
+            height="120">
+        {% else %}
+            <img src="{% static 'images/Bez_foto.jpg' %}" alt="" width="120"
+            height="120">
+        {% endif %}
+        <h2 class="mb-0">{{ form.instance.username }}</h2>
+        <p class="text-muted small">Зарегистрирован: {{ form.instance.date_joined|date:"d.m.Y" }}</p>
+        
+    </div>
+        <button type="button" 
+        class="btn btn-sm btn-outline-primary  start-0 mt-2 ms-2"
+        data-bs-toggle="modal" 
+        data-bs-target="#avatarModal">
+        <i class="bi bi-camera"></i> Изменить фото
+    </button>
+    <!-- Модальное окно для загрузки фото -->
+    <div class="modal fade" id="avatarModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" enctype="multipart/form-data" id="avatar-form">
+                    {% csrf_token %}
+                    <input type="file" class="form-control form-styleprofile mt-2" id="id_image"
+                            name="image" accept="image/*">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Изменение аватарки</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label">Выберите изображение</label>
+                            <input type="file" class="form-control" id="id_image" name="image" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Скрипт для предпросмотра перед загрузкой -->
+    <script>
+        document.getElementById('id_image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    document.getElementById('avatar-preview').src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+{% endblock content %}

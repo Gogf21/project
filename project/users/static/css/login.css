@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Supermercado+One&display=swap');
+
+body {
+    font-family: "Supermercado One", sans-serif;
+    font-size: 18px;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+
+.login {
+    font-size: 30px;
+    width: 100%; 
+    max-width: 1200px;
+    font-weight: 600;
+}
+
+.login-on {
+    position: fixed;
+    right: 48%;
+}
+.login-form section {
+    width: 200px;
+}
+
+.login-forma{
+    width: 100%;
+}
+
+.login-btn {
+    border-radius: 20px;
+    border:none;
+    background-color: rgb(233, 223, 209);
+}
+.new-account {
+    width: 100%;
+    display: flex;
+    margin-top:5px;
+}
+
+.new-account a {
+    margin-left: auto;
+    text-decoration: none;
+    color: rgba(84, 50, 153, 0.988);
+}

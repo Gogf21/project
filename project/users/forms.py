@@ -30,14 +30,11 @@ class ProfileForm(UserChangeForm):
         model = User
         fields = (
             'image',
-            'username',
-            'email',
         )
 
         image = forms.ImageField(
         required=False,
         widget=forms.FileInput(attrs={
-            'class': 'form-control',
             'accept': 'image/*'
         }))
 

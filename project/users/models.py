@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
+import os
 class User(AbstractUser):
     image = models.ImageField(upload_to='users_image', blank=True, null=True)
     first_name = None
@@ -12,6 +12,16 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    def save(self, *args, **kwargs):
+        try:
+            old_user = User.objects.get(pk=self.pk)
+            if old_user.image and old_user.image != self.image:
+                if os.path.isfile(old_user.image.path):
+                    os.remove(old_user.image.path)
+        except User.DoesNotExist:
+            pass
+            
+        super().save(*args, **kwargs)
     
 class UserPost(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='posts')

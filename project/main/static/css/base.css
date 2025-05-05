@@ -45,3 +45,39 @@ body {
     color: inherit !important;
     background-color: transparent !important;
 }
+.nav-item a{
+    color: #000;
+}
+
+.avatar-preview {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.avatar-preview:hover {
+    opacity: 0.8;
+}
+.form-profile {
+    margin-top:10px;
+}
+.elements {
+    margin-left: 20px;
+    margin-top: 40px;
+}
+.elements button {
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+.elements button:hover {
+    background-color: antiquewhite;
+}
+.add-post {
+    margin-left: 20px;
+    margin-top: 60px;
+    font-size: 25px;
+}

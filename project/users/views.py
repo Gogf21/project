@@ -45,23 +45,32 @@ def profile(request):
                 .select_related('user')\
                 .only('title', 'content', 'image', 'created_at')\
                 .order_by('-created_at')
-    paginator = Paginator(user_posts, 6)  # 6 постов на странице
+    paginator = Paginator(user_posts, 6)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
     if request.method == 'POST':
-        form = ProfileForm(data=request.POST, instance=request.user,
-                        files=request.FILES)
+        form = ProfileForm(data=request.POST, files=request.FILES, instance=request.user)
         if form.is_valid():
-            form.save()
+            user = form.save()  # Сохраняем и получаем обновлённого пользователя
+            print("🛠 Данные формы:", request.POST)
+            print("🛠 FILES:", request.FILES)
+            
+            if 'image' in request.FILES:
+                print("✅ Файл сохранён в:", user.image.path)  # Правильный путь
+                print("✅ URL файла:", user.image.url)  # Правильный URL
+            
             messages.success(request, 'Profile was changed')
             return HttpResponseRedirect(reverse('user:profile'))
-    
+        else:
+            print("❌ Ошибки формы:", form.errors)  # Выведет все ошибки валидации
     else:
         form = ProfileForm(instance=request.user)
 
-    return render(request, 'users/profile.html',{'form':form,
-                'page_obj':page_obj})
-
+    return render(request, 'users/profile.html', {
+        'form': form,
+        'page_obj': page_obj
+    })
 
 def logout(request):
     auth.logout(request)

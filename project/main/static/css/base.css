@@ -16,7 +16,10 @@ body {
 
 .sidebar {
     border-right: 1px solid #b3b3b3;
+    
+    max-width: 170px;
 }
+
 .nav-item {
     transition: all 0.5s ease;
     width: 100%;
@@ -76,8 +79,116 @@ body {
 .elements button:hover {
     background-color: antiquewhite;
 }
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: black;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 15px;
+    background: #f0f0f0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.file-label:hover {
+    background: #e0e0e0;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: #8f948f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
+}
 .add-post {
-    margin-left: 20px;
-    margin-top: 60px;
-    font-size: 25px;
+    border: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    background-color: rgb(254, 245, 233);
+}
+
+.posts-container {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    max-width: 650px; 
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post {
+    width: 100%; 
+    margin-bottom: 30px;
+    overflow: hidden; 
+}
+
+.post img {
+    border-radius: 15px;
+    width: 100%;
+    height: 450px; 
+    display: block; 
+    margin: 0 auto; 
+}
+
+.post p {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
 }

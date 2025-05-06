@@ -3,37 +3,176 @@
 
 {% block content %}
 <div class="profile-container">
-    <form method="post" enctype="multipart/form-data" class="d-flex form-profile">
-        {% csrf_token %}
-        <div class="avatar-upload">
-            <label for="id_image" class="avatar-edit">
-                {% if user.image %}
-                    <img src="{{ user.image.url }}" class="avatar-preview" id="avatar-preview">
-                {% else %}
-                    <img src="{% static 'images/Bez_foto.jpg' %}" class="avatar-preview" id="avatar-preview">
+    <!-- Форма для аватара -->
+    <div class="profile-container-data">
+        <form method="post" enctype="multipart/form-data" class="d-flex form-profile">
+            {% csrf_token %}
+            <div class="avatar-upload">
+                <label for="id_image" class="avatar-edit">
+                    {% if user.image %}
+                        <img src="{{ user.image.url }}" class="avatar-preview" id="avatar-preview">
+                    {% else %}
+                        <img src="{% static 'images/Bez_foto.jpg' %}" class="avatar-preview" id="avatar-preview">
+                    {% endif %}
+                </label>
+                <input type="file" name="image" accept="image/*" id="id_image" style="display: none;">
+            </div>
+            <div class="elements">
+                <h2 class="">{{user.username}}</h2>
+                <button type="submit" class="save-btn">Сохранить</button>
+            </div>
+        </form>
+    </div>
+
+
+    <button id="add-post-btn" class="add-post mt-3">+ пост</button>
+
+    <div id="post-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Новый пост</h3>
+            <form id="post-form" method="post" enctype="multipart/form-data" action="{% url 'user:create_post' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="title" placeholder="Заголовок" required class="form-input">
+                </div>
+                <div class="form-group">
+                    <textarea name="content" placeholder="Текст поста" class="form-textarea"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="post-image" class="file-label">
+                        <span>Выберите изображение</span>
+                        <input type="file" name="image" accept="image/*" id="post-image" style="display: none;">
+                    </label>
+                </div>
+                <button type="submit" class="submit-btn">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+    <div class="posts-container">
+        {% for post in posts %}
+            <div class="post">
+                <h3>
+                    {{post.title}}
+                </h3>
+                {% if post.image %}
+                    <img src="{{post.image.url}}" alt="{{post.title}}">
                 {% endif %}
-            </label>
-            <input type="file" name="image" accept="image/*" id="id_image" style="display: none;">
-        </div>
-        <div class="elements">
-            <h2 class="">{{user.username}}</h2>
-            <button type="submit" class="save-btn">Сохранить</button>
-        </div>
-        <div class="add-post">+ пост</div>
-    </form>
+                <p>{{post.content}}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <div id="loading" style="display: none;">
+        Загрузка...
+    </div>
 </div>
 
 
+
 <script>
-document.getElementById('id_image').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('avatar-preview').src = e.target.result;
+document.addEventListener('DOMContentLoaded', function() {
+    const avatarInput = document.getElementById('id_image');
+    if (avatarInput) {
+        avatarInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatar-preview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
+    
+    const modal = document.getElementById('post-modal');
+    const btn = document.getElementById('add-post-btn');
+    const span = document.getElementsByClassName('close')[0];
+    const postForm = document.getElementById('post-form');
+
+    if (btn && modal) {
+        btn.onclick = function() {
+            modal.style.display = 'block';
         }
-        reader.readAsDataURL(file);
+    }
+
+    if (span) {
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    if (postForm) {
+        postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    modal.style.display = 'none';
+                    postForm.reset();
+                    alert('Пост успешно добавлен!');
+                    
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ошибка при добавлении поста');
+            });
+        });
     }
 });
+</script>
+
+<script>
+let page = 2;
+let isLoading = false;
+
+function checkScroll(){
+    const {scrollTop, scrollHeight, ClientHeight} = document.documentElement;
+    const loadingElement = document.getElementById('loading');
+    if (scrollTop + ClientHeight >= scrollHeight - 100 && !isLoading){
+        isLoading = true;
+        loadingElement.style.display = 'block';
+        fetch('?page=${page}', {
+            headers : {'X-Requested-With': 'XMLHttpRequest'}
+        })
+        .then(response => {
+            if(!response.ok) throw new Error("No more posts");
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('posts-container').insertAdjacentHTML('beforeend', html);
+            page++;
+        })
+        .catch(error => {
+            if (error.message !== "No more posts") {
+                console.error("Ошибка:", error);
+            }
+        })
+        .finally(() => {
+            isLoading = false;
+            loadingElement.style.display = 'none';
+        });
+    }
+}
+window.addEventListener('scroll', checkScroll);
+checkScroll();
 </script>
 {% endblock %}

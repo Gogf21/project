@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.forms import AuthenticationForm, \
     UserCreationForm, UserChangeForm
 from .models import User
+from .models import UserPost
 
 
 class UserLoginForm(AuthenticationForm):
@@ -38,3 +39,9 @@ class ProfileForm(UserChangeForm):
             'accept': 'image/*'
         }))
 
+
+
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = UserPost
+        fields = ['title', 'content', 'image']  # Только нужные поля
